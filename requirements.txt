@@ -1,0 +1,13 @@
+requests>=2.31
+python-dotenv>=1.0
+PyYAML>=6.0
+google-genai>=0.3
+yt-dlp>=2024.1
+
+# cffi is a transitive dependency of google-genai (via google.auth ->
+# cryptography -> _cffi_backend). Some environments resolve cryptography from
+# a system package pip doesn't manage, which can leave the compiled
+# _cffi_backend extension unavailable at import time; pinning cffi directly
+# avoids that. Avoid pinning cryptography itself - a system-managed copy may
+# not be something pip can safely replace.
+cffi>=1.16
