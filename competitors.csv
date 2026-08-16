@@ -1,0 +1,16 @@
+name,handle_or_id,relation,type,cadence,lang,channel_id,subs,resolved_at
+GearHead Fitness Lab,@GearHeadFitnessLab,direct,channel,daily,eng,UCdemo00000000000000001,412000,2026-08-01
+Iron and Rubber Reviews,@IronRubberReviews,direct,channel,daily,eng,UCdemo00000000000000002,367000,2026-08-01
+The Kettlebell Corner,@TheKettlebellCorner,direct,channel,daily,eng,UCdemo00000000000000003,298000,2026-08-01
+Flex Review Lab,@FlexReviewLab,direct,channel,daily,eng,UCdemo00000000000000004,255000,2026-08-01
+Budget Barbell Co,@BudgetBarbellCo,direct,channel,daily,eng,UCdemo00000000000000005,231000,2026-08-01
+RepCheck Reviews,@RepCheckReviews,direct,channel,daily,eng,UCdemo00000000000000006,198000,2026-08-01
+Yoga and Iron,@YogaAndIron,direct,channel,daily,eng,UCdemo00000000000000007,176000,2026-08-01
+Garage Gym Weekly,@GarageGymWeekly,direct,channel,daily,eng,UCdemo00000000000000008,164000,2026-08-01
+PlateStack Media,@PlateStackMedia,direct,channel,daily,eng,UCdemo00000000000000009,141000,2026-08-01
+FitGear Digest,@FitGearDigest,direct,channel,weekly,eng,UCdemo00000000000000010,98000,2026-08-01
+Sana Lifts,@SanaLifts,indirect,individual,weekly,eng,UCdemo00000000000000011,220000,2026-08-01
+CoachDrew Strength,@CoachDrewStrength,indirect,individual,weekly,eng,UCdemo00000000000000012,151000,2026-08-01
+The Mobility Doctor,@TheMobilityDoctor,indirect,individual,weekly,eng,UCdemo00000000000000013,133000,2026-08-01
+HomeRack Fitness,@HomeRackFitness,self,channel,daily,mix,UCdemo00000000000000014,52000,2026-08-01
+HomeRack Fitness EN,@HomeRackFitnessEN,self,channel,daily,eng,UCdemo00000000000000015,9400,2026-08-01

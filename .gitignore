@@ -57,3 +57,10 @@ temp/
 # OS / system
 Thumbs.db
 desktop.ini
+
+# cache/ is ephemeral per-clone scratch (channel ids, baselines, vidiq pulls,
+# comment caches, thumbnails, keyword caches); the durable ledger lives in
+# data/ and rendered reports live in reports/ - both TRACKED on purpose, the
+# repo is the delivery surface (see demo/README.md).
+cache/*
+!cache/.gitkeep

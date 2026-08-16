@@ -1,0 +1,72 @@
+# Demo seasonal-demand calendar (home-fitness gear review niche), fictional.
+#
+# Phases drive the "calendar tailwind" signal in score.py: a candidate whose
+# title matches the boost_hooks of the currently-active phase gets the
+# calendar component of the Opportunity Score. Unlike an exam-cycle vertical
+# (a single fixed date), a gear-review niche is naturally annual/recurring -
+# this covers one full year and repeats the same shape year to year.
+
+phases:
+  - key: resolution_season
+    label: "New Year resolution season"
+    start: "2026-01-01"
+    end: "2026-02-15"
+    boost_hooks:
+      - new year new gym
+      - home gym starter kit
+      - beginner strength training
+      - resolution workout plan
+      - budget home gym setup
+      - how to start lifting at home
+
+  - key: pre_summer_cut
+    label: "Pre-summer cut"
+    start: "2026-02-16"
+    end: "2026-05-31"
+    boost_hooks:
+      - summer body cardio
+      - cutting season equipment
+      - best cardio equipment
+      - home hiit gear
+      - beach body home workout
+
+  - key: summer_deals
+    label: "Summer gear deals"
+    start: "2026-06-01"
+    end: "2026-08-15"
+    boost_hooks:
+      - summer sale
+      - prime day fitness deals
+      - best deals on home gym gear
+      - summer clearance
+
+  - key: back_to_routine
+    label: "Back-to-routine reset"
+    start: "2026-08-16"
+    end: "2026-10-15"
+    boost_hooks:
+      - fall fitness reset
+      - back to gym routine
+      - post summer training plan
+      - rebuild your routine
+
+  - key: holiday_gifting
+    label: "Holiday gifting season"
+    start: "2026-10-16"
+    end: "2026-12-24"
+    boost_hooks:
+      - best fitness gifts
+      - gym gear gift guide
+      - holiday deals kettlebell
+      - black friday home gym deals
+      - gift guide for lifters
+
+  - key: year_end_deload
+    label: "Year-end deload and planning"
+    start: "2026-12-25"
+    end: "2026-12-31"
+    boost_hooks:
+      - year in review
+      - next year training plan
+      - gear wishlist
+      - planning next year home gym

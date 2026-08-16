@@ -126,9 +126,17 @@ def cluster_videos(videos: list[dict], token_sets: list[set], cfg: dict) -> tupl
 
 
 def _cluster_label(token_sets: list[set], idxs: list[int]) -> str:
+    """Top-3 most frequent tokens across the cluster's titles.
+
+    Sets iterate in an order tied to Python's per-process string-hash seed,
+    so updating the counter straight from each set makes count-ties between
+    tokens (and therefore which 3 make the label) resolve differently run to
+    run on identical input. Sorting each set before counting fixes the
+    insertion order the tie-break depends on.
+    """
     counter = Counter()
     for i in idxs:
-        counter.update(token_sets[i])
+        counter.update(sorted(token_sets[i]))
     common_toks = [t for t, _ in counter.most_common(3)]
     return " / ".join(common_toks) if common_toks else "misc"
 

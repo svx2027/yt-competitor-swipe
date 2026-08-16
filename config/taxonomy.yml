@@ -1,0 +1,39 @@
+# Demo topic taxonomy: home-fitness gear review niche. Every ledger row gets
+# exactly one label. Tagging: rules first (hints below, case-insensitive
+# substring match, first label wins - order matters, most specific first),
+# session judgment for leftovers, "misc" as the final catch-all. Tags are
+# IMMUTABLE once written (see src/common.py append_history/update_history_rows).
+#
+# Do not rename labels casually: ledger rows, the coverage-gap matrix and the
+# outcome matcher all key on them.
+
+labels:
+  - label: strength-training-gear
+    hints: ["kettlebell", "dumbbell", "barbell", "power rack", "squat rack", "weight bench", "weight plate", "adjustable dumbbell", "resistance band"]
+
+  - label: cardio-equipment
+    hints: ["treadmill", "rowing machine", "exercise bike", "elliptical", "jump rope", "cardio machine", "air bike"]
+
+  - label: recovery-and-mobility
+    hints: ["foam roller", "massage gun", "mobility drill", "stretching routine", "recovery tool", "percussion massager"]
+
+  - label: apparel-and-accessories
+    hints: ["lifting shoes", "gym gloves", "weightlifting belt", "wrist wraps", "lifting straps", "gym bag", "yoga mat"]
+
+  - label: buying-guides
+    hints: ["buying guide", "how to choose", "best budget", " vs ", "comparison", "which one should you buy", "worth it"]
+
+  - label: workout-programming
+    hints: ["workout plan", "program review", "training split", "beginner routine", "progressive overload", "workout programming"]
+
+  - label: deals-and-drops
+    hints: ["deal", "discount", "sale", "coupon", "price drop", "back friday", "cyber monday"]
+
+  - label: home-gym-setup
+    hints: ["home gym setup", "garage gym", "gym flooring", "small space gym", "apartment gym", "gym tour"]
+
+  - label: motivation-lifestyle
+    hints: ["motivation", "journey", "transformation", "routine vlog", "day in the life", "consistency"]
+
+  - label: misc
+    hints: []   # catch-all; assigned by session judgment or as final fallback

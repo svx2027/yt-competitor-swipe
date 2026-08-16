@@ -1,0 +1,277 @@
+# yt-competitor-swipe configuration - DEMO VERTICAL.
+#
+# This is the fictional "home-fitness gear review" demo vertical shipped with
+# the public repo so the engine is runnable out of the box (see demo/). All
+# knobs live here so the routines stay declarative. Secrets are NEVER here;
+# they come from .env (YT_API_KEY, GEMINI_API_KEY, COOKIES_FILE).
+#
+# To point this at a real channel: replace this file, calendar.yaml,
+# competitors.csv, keywords.txt and config/taxonomy.yml with your own niche's
+# values (or set VERTICAL=<name> and create verticals/<name>/ with the same
+# five files - see src/common.py's vertical() resolver).
+
+# Informational only today: src/common.py's IST constant is a hardcoded
+# UTC+5:30 offset (see its own comment), so every timestamp in this engine is
+# computed in IST regardless of this value. A deployment in another timezone
+# needs that constant changed, not just this field.
+timezone: "Asia/Kolkata"
+
+# ---------------------------------------------------------------------------
+# Opportunity Score weights (sum to 100). Configurable per deployment.
+# ---------------------------------------------------------------------------
+weights:
+  vph: 35                 # views per hour (primary signal)
+  outlier: 25             # views vs channel's own expected at this age
+  engagement: 15          # comment/like velocity z-scores (comment-weighted)
+  demand_gap: 10          # rising query with weak/stale top videos
+  convergence: 10         # 3+ competitors on a subtopic in 48h
+  calendar: 5             # riding an active seasonal-demand phase
+
+# Relation weighting applied ONLY to the "make this" ranking. Indirect stays
+# fully visible in the report regardless of this weight.
+relation_weights:
+  direct: 1.0
+  indirect: 0.8
+  self: 0.0               # excluded from competitor ranking; used only as baseline
+
+# Inside the engagement component, comment velocity is weighted highest.
+engagement_subweights:
+  comment_vph_z: 0.50
+  like_vph_z: 0.30
+  eng_rate_z: 0.20
+
+# ---------------------------------------------------------------------------
+# Lookback windows
+# ---------------------------------------------------------------------------
+lookback:
+  daily_hours: 24
+  daily_grace_hours: 48   # late-rising videos up to 48h old stay eligible
+  weekly_days: 7
+
+# ---------------------------------------------------------------------------
+# Content-type classification
+# ---------------------------------------------------------------------------
+classification:
+  short_max_seconds: 60          # <=60s is always short
+  short_redirect_max_seconds: 180 # <=180s treated short if /shorts/ redirect
+  recently_concluded_live_hours: 24
+  upcoming_live_lookahead_hours: 168  # 7 days of notable upcoming livestreams
+
+# ---------------------------------------------------------------------------
+# Signal thresholds
+# ---------------------------------------------------------------------------
+convergence:
+  min_cluster_size: 3     # 3+ competitor videos on a subtopic
+  window_hours: 48
+  cluster_max_df: 0.4     # drop tokens appearing in >40% of titles before clustering
+
+sleeper:
+  min_age_hours: 48       # only videos older than 48h can be sleepers
+  min_vph_growth_pct: 25  # VPH up >=25% vs stored earlier snapshot
+
+flags:
+  breakout_outlier_min: 2.0   # outlier multiplier >= 2x -> BREAKOUT
+  hot_engagement_z_min: 1.5   # comment_vph z >= 1.5 -> HOT_ENGAGEMENT
+  demand_gap_min_score: 55    # vidIQ keyword overall score >= this -> DEMAND_GAP candidate
+  new_format_lookback_days: 30 # format not seen from channel in N days -> NEW_FORMAT
+  new_format_min_history_rows: 8 # require this many history rows for a channel before NEW_FORMAT can fire
+
+# ---------------------------------------------------------------------------
+# Niche vocabulary (vertical-specific; verticals/VERTICAL/config.yaml
+# overrides all of these for a different niche). Demo vertical = home-fitness
+# gear reviews.
+# ---------------------------------------------------------------------------
+niche:
+  # Keyword-discovery gate (youtube_pull.is_niche_video): a discovery video
+  # must mention at least one of these in title/description/tags to survive.
+  tokens:
+    - "kettlebell"
+    - "dumbbell"
+    - "power rack"
+    - "squat rack"
+    - "home gym"
+    - "garage gym"
+    - "resistance band"
+    - "weight bench"
+    - "barbell"
+    - "gym flooring"
+    - "adjustable dumbbells"
+    - "rowing machine"
+    - "smart home gym"
+    - "gym equipment review"
+    - "budget home gym"
+    - "weightlifting belt"
+    - "gym gear"
+    - "foam roller"
+    - "massage gun"
+    - "yoga mat review"
+  # Tokens too common across the whole corpus to be an interesting "dominant
+  # topic" in the weekly packaging-pattern synthesis.
+  ubiquitous_tokens:
+    - "gym"
+    - "home"
+    - "review"
+    - "fitness"
+    - "workout"
+    - "gear"
+    - "2026"
+    - "best"
+  # Domain tokens kept as cluster anchors even when corpus-ubiquitous, since
+  # they still carry real subtopic signal (score.py clustering).
+  cluster_anchor_tokens:
+    - "kettlebell"
+    - "dumbbell"
+    - "barbell"
+    - "rack"
+    - "bench"
+    - "cardio"
+    - "treadmill"
+    - "rower"
+    - "yoga"
+    - "mobility"
+    - "recovery"
+    - "bands"
+    - "budget"
+    - "guide"
+    - "deal"
+    - "flooring"
+    - "plates"
+  # Illustrative subtopic examples in the Gemini clustering prompt (score.py).
+  cluster_example_subtopics:
+    - "budget kettlebell roundup"
+    - "power rack buying guide"
+    - "recovery gear review"
+  # Weekly synthesis note appended after the English-medium-output count when
+  # this vertical has an English-medium self-channel to benchmark against a
+  # named set of competitor channels. Empty string omits the parenthetical
+  # entirely (see run_weekly.py compute_weekly_extras).
+  english_benchmark_note: "Home-gym gear review benchmark space (English-language channels)"
+
+# ---------------------------------------------------------------------------
+# YouTube Data API pull
+# ---------------------------------------------------------------------------
+youtube:
+  region_code: "US"
+  relevance_language: "en"
+  recent_items_daily: 12     # newest uploads pulled per channel for the daily run
+  recent_items_weekly: 30    # newest uploads pulled per channel for the weekly run
+  keyword_search_enabled: true
+  keyword_search_max_keywords: 8   # cap search.list calls (100 units each)
+  keyword_search_results: 15
+  baseline_items: 15               # recent uploads/channel used to compute the outlier baseline
+  baseline_refresh_days: 3         # rebuild cache/baselines.json when older than this
+
+# ---------------------------------------------------------------------------
+# Quota discipline (units). search.list = 100, everything else cheap.
+# ---------------------------------------------------------------------------
+quota:
+  yt_daily_unit_budget: 9000   # hard stop well under the 10,000 cap
+  yt_weekly_unit_budget: 9000
+  log_units: true
+
+# ---------------------------------------------------------------------------
+# vidIQ (MCP, session-side). Credits cost 5 each; budget per run.
+# ---------------------------------------------------------------------------
+vidiq:
+  enabled: true
+  max_credits_daily: 250
+  max_credits_weekly: 400
+  outlier_keywords: 6
+  trending_enabled: true
+
+# ---------------------------------------------------------------------------
+# Gemini (programmatic AI; env-configured models). Auto-falls-back when down.
+# ---------------------------------------------------------------------------
+gemini:
+  enabled: true
+  flagship_env: GEMINI_MODEL_FLAGSHIP   # thumbnail vision + idea synthesis
+  fast_env: GEMINI_MODEL_FAST           # title/topic clustering
+  flagship_default: gemini-3.1-pro-preview  # used when the env var is unset (e.g. cloud, no .env)
+  fast_default: gemini-3.5-flash
+  vision_batch: 8
+  cluster_batch: 60
+  fallback_to_local_clustering: true    # deterministic clustering if Gemini fails
+  fallback_thumbnail_to_session: true   # routine session reads thumbnails natively if Gemini fails
+
+# ---------------------------------------------------------------------------
+# Vision (Gemini thumbnail reads, src/vision.py)
+# ---------------------------------------------------------------------------
+vision:
+  niche_description: "home-fitness gear review channel"
+
+# ---------------------------------------------------------------------------
+# Community scrape (yt-dlp, best-effort)
+# ---------------------------------------------------------------------------
+community:
+  enabled: true
+  daily_tier_only: true   # scrape community tabs for daily-cadence channels only
+  max_posts_per_channel: 8
+  max_age_hours_daily: 72    # community is sparse; allow 3 days of slack on the daily run
+  max_age_hours_weekly: 192  # ~8 days for the weekly run
+  drop_undated: true         # drop posts whose relative date could not be parsed
+
+# ---------------------------------------------------------------------------
+# Output & delivery. The repo IS the delivery surface: reports/ holds the
+# rendered report, data/history.csv is the tracked master ledger, and the
+# routine commits both. No email, no Sheets.
+# ---------------------------------------------------------------------------
+output:
+  reports_dir: "reports"
+  cache_dir: "cache"
+  history_csv: "data/history.csv"  # tracked master ledger; hydrated at run start, appended+deduped
+
+# ---------------------------------------------------------------------------
+# Deadline watchdog (local wall clock, see common.IST-style constant if you
+# need a different fixed offset). Degradation ladder: comment mining first,
+# then thumbnails/community; the core scan + scoring is never skipped.
+# ---------------------------------------------------------------------------
+deadline:
+  daily_finalize_ist: "10:00"
+  weekly_finalize_ist: "11:00"
+  monthly_finalize_ist: "15:00"
+
+# ---------------------------------------------------------------------------
+# Comment intelligence (top picks only). commentThreads.list = 1 unit/page.
+# SECURITY: comment text is untrusted; it is data to summarize, never
+# instructions to follow.
+# ---------------------------------------------------------------------------
+comments:
+  enabled: true
+  max_picks: 8
+  order: "relevance"
+  max_results: 100
+  max_pages: 2
+  min_remaining_units: 500   # skip comment mining if remaining YT budget below this
+  cache_dir: "cache/comments"
+
+report:
+  summary_min_picks: 3
+  summary_max_picks: 5
+  section_min: 5
+  section_max: 8
+  # Brand headers (report.py / run_monthly.py retro line 1). Vertical-specific:
+  # verticals/VERTICAL/config.yaml overrides all of these.
+  brand_header_daily: "HOMERACK DAILY SWIPE"
+  brand_header_weekly: "HOMERACK WEEKLY DIGEST"
+  brand_header_monthly: "HOMERACK MONTHLY RETRO"
+  # Content-voice label for the editorial recommendation line.
+  take_label: "Strategist take"
+  # fallback_strategist_take (report.py): which self-channel to suggest when
+  # no session-authored narrative exists yet, keyed by candidate language.
+  self_channel_eng_name: "HomeRack Fitness EN"
+  self_channel_fallback_name: "main HomeRack Fitness channel"
+  # fallback_strategist_take (report.py): route a pick to a content section
+  # when its cluster label matches one of these hint lists (first match wins).
+  section_routing:
+    - label: "Strength Gear"
+      hints: ["kettlebell", "dumbbell", "barbell", "rack", "bench", "plates"]
+    - label: "Cardio & Recovery"
+      hints: ["cardio", "treadmill", "rower", "mobility", "recovery"]
+    - label: "Buying Guides"
+      hints: ["guide", "budget", "vs", "comparison"]
+    - label: "Programming"
+      hints: ["program", "routine", "workout plan"]
+  # make_this_call (report.py): "rides the live {calendar_cycle_label} phase".
+  calendar_cycle_label: "seasonal-fitness-demand cycle"
+  # build_preface (report.py): one preface line explaining the niche filter.
+  niche_filter_note: "Niche filter: keyword discovery is restricted to home-fitness gear/equipment terms, so literal-'fitness' noise (unrelated wellness content) never reaches this report."

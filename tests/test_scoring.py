@@ -10,10 +10,16 @@ engine code). Run from the repo root:
 """
 from __future__ import annotations
 
+import os
+import subprocess
+import sys
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from src import common, keyword_demand, score
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
 def _video(video_id, channel_id, title, vph=10.0, comment_vph=0.5,
@@ -95,6 +101,32 @@ class ClusteringTests(unittest.TestCase):
         sizes = sorted(len(c) for c in clusters)
         self.assertEqual(sum(sizes), 3)
         self.assertLess(max(sizes), 3)
+
+    def test_cluster_label_is_deterministic_across_hash_seeds(self):
+        # _cluster_label builds a Counter by iterating each title's token
+        # SET. Set iteration order depends on the process's string-hash seed
+        # (fixed per process, so a same-process loop can't detect this), so
+        # updating the counter straight from the sets made count-ties between
+        # tokens - and therefore which 3 win most_common(3) - resolve
+        # differently across otherwise-identical runs, silently changing the
+        # rendered "Route to X" section-routing sentence in report.py.
+        # Regression test: run the real function in fresh subprocesses under
+        # several hash seeds and confirm they all agree.
+        script = (
+            "import sys; sys.path.insert(0, '.'); from src.score import _cluster_label; "
+            "sets = [{'kettlebell', 'win', 'expect'}, {'kettlebell', 'did', 'not'}, "
+            "{'kettlebell', 'budget', 'deal'}]; "
+            "print(_cluster_label(sets, [0, 1, 2]))"
+        )
+        seen = set()
+        for seed in ("0", "1", "2", "3"):
+            out = subprocess.run(
+                [sys.executable, "-c", script], cwd=str(REPO_ROOT),
+                env={**os.environ, "PYTHONHASHSEED": seed},
+                capture_output=True, text=True, check=True,
+            )
+            seen.add(out.stdout.strip())
+        self.assertEqual(len(seen), 1, f"cluster label varies by hash seed: {seen}")
 
 
 class OutlierTests(unittest.TestCase):

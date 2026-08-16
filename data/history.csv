@@ -1,0 +1,13 @@
+date,format,channel,relation,title,video_or_post_id,published_at,views,vph,outlier,comments,comment_vph,eng_rate,flags,opportunity_score,topic,executed,executed_video_id,outcome_vph_ratio
+2026-08-16,short,GearHead Fitness Lab,direct,We Did Not Expect This Kettlebell To Win,demoGH03,2026-08-16T08:53:03.064359Z,45000,9000.0,20.0,610,122.0,0.1291,BREAKOUT|HOT_ENGAGEMENT,74.8,strength-training-gear,pending,,
+2026-08-16,longform,The Kettlebell Corner,direct,What Is This Budget Kettlebell,demoKC01,2026-08-16T03:53:03.064382Z,15000,1500.0,1.0,140,14.0,0.0827,CONVERGENCE,46.9,strength-training-gear,pending,,
+2026-08-16,short,Yoga and Iron,direct,5 Yoga Mats That Actually Grip,demoYI01,2026-08-16T05:53:03.064400Z,22000,2750.0,1.0,310,38.75,0.1323,,44.8,apparel-and-accessories,pending,,
+2026-08-16,livestream,Budget Barbell Co,direct,Live Q&A: Home Gym Setup,demoBB01,2026-08-16T10:53:03.064411Z,3000,1000.0,1.0,95,31.667,0.1017,,41.7,home-gym-setup,pending,,
+2026-08-16,longform,GearHead Fitness Lab,direct,The New Budget Kettlebell,demoGH01,2026-08-15T17:53:03.064255Z,8000,400.0,1.0,90,4.5,0.0862,CONVERGENCE,35.8,strength-training-gear,pending,,
+2026-08-16,longform,Iron and Rubber Reviews,direct,This Is Your Best Budget Kettlebell,demoIR01,2026-08-15T07:53:03.064372Z,6000,200.0,1.0,55,1.833,0.0792,CONVERGENCE,30.9,buying-guides,,,
+2026-08-16,longform,Sana Lifts,indirect,My Home Gym Tour 2026,demoSL01,2026-08-13T15:53:03.064424Z,40000,571.43,1.0,250,3.571,0.0862,,27.7,home-gym-setup,,,
+2026-08-16,longform,RepCheck Reviews,direct,Back To Gym: Garage Flooring Routine Guide,demoRC01,2026-08-14T01:53:03.064392Z,9000,150.0,1.0,60,1.0,0.0622,CALENDAR,24.9,,,,
+2026-08-16,longform,GearHead Fitness Lab,direct,Adjustable Dumbbell Torture Test,demoGH02,2026-08-14T21:53:03.064344Z,12000,300.0,0.75,80,2.0,0.065,,21.8,strength-training-gear,,,
+2026-08-16,longform,HomeRack Fitness,self,Our Kettlebell Buying Guide,demoHR01,2026-08-15T22:53:03.064434Z,1800,120.0,1.0,20,1.333,0.0889,,0,buying-guides,,,
+2026-08-16,post,GearHead Fitness Lab,direct,Which kettlebell brand should we test next?,https://www.youtube.com/post/demopostGH01,,0,0,0,0,0,0,HOT_ENGAGEMENT,35.0,strength-training-gear,,,
+2026-08-16,post,RepCheck Reviews,direct,We hit 200K subscribers today. Thank you!,https://www.youtube.com/post/demopostRC01,,0,0,0,0,0,0,,22.5,,,,
