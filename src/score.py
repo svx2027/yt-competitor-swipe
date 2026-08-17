@@ -15,18 +15,15 @@ from collections import Counter, defaultdict
 from . import common, keyword_demand
 
 _TOKEN_RE = re.compile(r"[a-z0-9']+")
-# Cross-niche English filler words, plus Hindi/Hinglish function words and
-# address honorifics ("sir"/"maam"/"ji") - a fixed default tuned for mixed
-# Hindi/English titles. Like the IST constant in common.py, this is a
-# disclosed, hardcoded default rather than a per-vertical override; a
-# deployment on a different-language corpus would extend or replace this set
-# via config.yaml, the same way niche.cluster_anchor_tokens already is.
+# Cross-niche English filler words - a fixed default tuned for this repo's
+# English-language demo corpus. A deployment on a different-language corpus
+# would extend or replace this set via config.yaml, the same way
+# niche.cluster_anchor_tokens already is.
 _GENERIC = {
     "the", "a", "an", "to", "for", "of", "in", "on", "and", "or", "how", "your",
     "you", "is", "are", "with", "this", "that", "best", "new", "full", "video",
-    "live", "session", "class", "ep", "part", "free", "ka", "ki", "ke", "se",
-    "hai", "kaise", "kya", "ko", "me", "aur", "do", "ho", "by", "from", "what",
-    "sir", "maam", "mam", "ji", "official", "time", "exam",
+    "live", "session", "class", "ep", "part", "free", "by", "from", "what",
+    "official", "time", "vs", "top", "review",
 }
 # Domain tokens explicitly KEPT as cluster anchors even when corpus-ubiquitous
 # (e.g. a subject-code abbreviation can be common across this niche's titles

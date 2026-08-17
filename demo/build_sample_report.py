@@ -80,30 +80,30 @@ def build_candidates() -> list[dict]:
         # GearHead Fitness Lab: 3 uploads in-window so the same-run baseline
         # has enough points for a real median - the 3rd is a genuine BREAKOUT.
         _video("UCdemo00000000000000001", "GearHead Fitness Lab", "direct", "channel", 412000, "eng",
-               "demoGH01", "The New Budget Kettlebell", "longform", 20, 8000, 600, 90),
+               "demoGH01xyz", "The New Budget Kettlebell", "longform", 20, 8000, 600, 90),
         _video("UCdemo00000000000000001", "GearHead Fitness Lab", "direct", "channel", 412000, "eng",
-               "demoGH02", "Adjustable Dumbbell Torture Test", "longform", 40, 12000, 700, 80),
+               "demoGH02xyz", "Adjustable Dumbbell Torture Test", "longform", 40, 12000, 700, 80),
         _video("UCdemo00000000000000001", "GearHead Fitness Lab", "direct", "channel", 412000, "eng",
-               "demoGH03", "We Did Not Expect This Kettlebell To Win", "short", 5, 45000, 5200, 610),
+               "demoGH03xyz", "We Did Not Expect This Kettlebell To Win", "short", 5, 45000, 5200, 610),
         # Two more direct competitors piling onto the exact same clickbait
         # "budget kettlebell" hook inside 48h -> 3-channel CONVERGENCE.
         _video("UCdemo00000000000000002", "Iron and Rubber Reviews", "direct", "channel", 367000, "eng",
-               "demoIR01", "This Is Your Best Budget Kettlebell", "longform", 30, 6000, 420, 55),
+               "demoIR01xyz", "This Is Your Best Budget Kettlebell", "longform", 30, 6000, 420, 55),
         _video("UCdemo00000000000000003", "The Kettlebell Corner", "direct", "channel", 298000, "eng",
-               "demoKC01", "What Is This Budget Kettlebell", "longform", 10, 15000, 1100, 140),
+               "demoKC01xyz", "What Is This Budget Kettlebell", "longform", 10, 15000, 1100, 140),
         # Matches the active seasonal calendar phase's boost hooks -> CALENDAR.
         _video("UCdemo00000000000000006", "RepCheck Reviews", "direct", "channel", 198000, "eng",
-               "demoRC01", "Back To Gym: Garage Flooring Routine Guide", "longform", 60, 9000, 500, 60),
+               "demoRC01xyz", "Back To Gym: Garage Flooring Routine Guide", "longform", 60, 9000, 500, 60),
         _video("UCdemo00000000000000007", "Yoga and Iron", "direct", "channel", 176000, "eng",
-               "demoYI01", "5 Yoga Mats That Actually Grip", "short", 8, 22000, 2600, 310),
+               "demoYI01xyz", "5 Yoga Mats That Actually Grip", "short", 8, 22000, 2600, 310),
         _video("UCdemo00000000000000005", "Budget Barbell Co", "direct", "channel", 231000, "eng",
-               "demoBB01", "Live Q&A: Home Gym Setup", "livestream", 3, 3000, 210, 95),
+               "demoBB01xyz", "Live Q&A: Home Gym Setup", "livestream", 3, 3000, 210, 95),
         _video("UCdemo00000000000000011", "Sana Lifts", "indirect", "individual", 220000, "eng",
-               "demoSL01", "My Home Gym Tour 2026", "longform", 70, 40000, 3200, 250),
+               "demoSL01xyz", "My Home Gym Tour 2026", "longform", 70, 40000, 3200, 250),
         # Own channel, for baseline / coverage-gap comparisons (relation=self
         # is excluded from ranking and convergence, per score.py by design).
         _video("UCdemo00000000000000014", "HomeRack Fitness", "self", "channel", 52000, "mix",
-               "demoHR01", "Our Kettlebell Buying Guide", "longform", 15, 1800, 140, 20),
+               "demoHR01xyz", "Our Kettlebell Buying Guide", "longform", 15, 1800, 140, 20),
     ]
     posts = [
         _post("UCdemo00000000000000001", "GearHead Fitness Lab", "direct", "channel", 412000, "eng",
@@ -148,7 +148,25 @@ def main() -> None:
     }
 
     text = report.build_daily_report(scored, meta, cfg, run_info, demand_section)
-    text = DEMO_NOTICE + text
+    # Insert the disclaimer inside the PREFACE section (rendered dashboard-side
+    # as the "What this run did" panel) rather than prepending it to line 0 of
+    # the file. The dashboard's ingest parser (dashboard/scripts/ingest.mjs)
+    # takes the file's first line verbatim as the report's page title; a
+    # notice sitting there instead of "HOMERACK DAILY SWIPE - ..." broke the
+    # rendered header and the "header date matches filename" verification
+    # check. Inserting after the heading keeps the disclaimer visible (inside
+    # the collapsible preface, not silently dropped) without displacing the
+    # real title. Fails loudly if report.py's PREFACE heading format ever
+    # changes, rather than silently reintroducing the header bug.
+    preface_marker = f"PREFACE: WHAT THIS RUN DID\n{report.SUB}\n"
+    if preface_marker not in text:
+        raise RuntimeError(
+            "demo/build_sample_report: PREFACE heading marker not found in "
+            "generated report text; report.py's format changed. Update "
+            "preface_marker above instead of silently prepending DEMO_NOTICE "
+            "back onto line 0 (that regresses the dashboard header bug)."
+        )
+    text = text.replace(preface_marker, preface_marker + DEMO_NOTICE, 1)
 
     result = report.write_outputs(text, scored, cfg, run_info, kind="daily")
     print(f"Wrote {result['report_path']}")

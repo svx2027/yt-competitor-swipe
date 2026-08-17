@@ -1,0 +1,11 @@
+<!-- Source vector for app/favicon.ico (the browser-tab icon).
+     "Daily Content Swipe" mark: a purple tile with a swipe-card stack and a play
+     glyph (content you swipe through daily). To regenerate the .ico, rasterize
+     this at 16/32/48 px and pack the PNGs into an ICO (see git history for the
+     one-off build script). Accent purple matches --accent (#6d5bb0). -->
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="7" fill="#6d5bb0"/>
+  <rect x="10" y="6" width="15" height="13" rx="2.4" fill="#ffffff" opacity="0.38"/>
+  <rect x="6" y="10" width="16" height="14" rx="2.6" fill="#ffffff"/>
+  <path d="M11.5 14 L17.7 17 L11.5 20 Z" fill="#6d5bb0"/>
+</svg>
