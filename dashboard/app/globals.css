@@ -1616,16 +1616,16 @@ a.brand:focus-visible {
   border-radius: 999px;
   border: 1px solid var(--line);
 }
-.radar-subj.s-Quants {
+.radar-subj.s-Strength {
   color: var(--accent);
   background: var(--accent-soft);
   border-color: var(--accent-border);
 }
-.radar-subj.s-LRDI {
+.radar-subj.s-Cardio {
   color: var(--ok-ink);
   background: var(--ok-bg);
 }
-.radar-subj.s-VARC {
+.radar-subj.s-Recovery {
   color: var(--warn-ink);
   background: var(--warn-bg);
 }

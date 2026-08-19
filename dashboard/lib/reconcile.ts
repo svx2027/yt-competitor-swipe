@@ -174,7 +174,7 @@ async function reconcileInner(token: string): Promise<ReconcileResult> {
 }
 
 // Reconcile ONE vertical's stranded reports + ledger onto main. This is the original
-// single-source (CAT-only) reconcile logic, unchanged except every literal 'reports' /
+// single-source (single-vertical-only) reconcile logic, unchanged except every literal 'reports' /
 // 'data/history.csv' path is now source.reportsPath / source.historyPath, and the 45s
 // budget is a shared `deadline` passed in rather than owned by this function.
 async function reconcileOneSource(token: string, deadline: number, source: ReconcileSource): Promise<ReconcileResult> {

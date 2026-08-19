@@ -474,8 +474,8 @@ function ingestSource(source) {
     fs.writeFileSync(path.join(out, 'reports', r.slug + '.json'), JSON.stringify(r));
   }
   // Competitor Radar is a strictly additive, secondary surface. It must never be able
-  // to fail the CAT report build (the paying product), so any error here is caught and
-  // downgraded to a skipped radar; the reports above are already written and stand.
+  // to fail the main report build (the primary deliverable), so any error here is caught
+  // and downgraded to a skipped radar; the reports above are already written and stand.
   try {
     ingestCompetitors(vertical, out);
   } catch (e) {

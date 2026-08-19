@@ -134,7 +134,7 @@ export default async function CompetitorRadarPage({
                   className={`radar-chip lg${activeKey === y.key ? ' on' : ''}`}
                   aria-current={activeKey === y.key ? 'true' : undefined}
                 >
-                  CAT {y.year}
+                  Cycle {y.year}
                 </Link>
               ))}
               <Link

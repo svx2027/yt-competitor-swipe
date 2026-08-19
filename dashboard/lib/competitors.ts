@@ -11,7 +11,7 @@ const CONTENT_ROOT = path.join(process.cwd(), '.content');
 const SAFE = /^[\w.-]+$/; // slug / window are path segments; reject anything else
 
 export type RadarFormat = 'long' | 'short' | 'live';
-export type RadarSubject = 'Quants' | 'LRDI' | 'VARC' | 'General';
+export type RadarSubject = 'Strength' | 'Cardio' | 'Recovery' | 'General';
 
 export type RadarRow = {
   id: string;

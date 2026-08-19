@@ -73,7 +73,7 @@ export default async function InsightsPage({
           <h1>Radar Insights</h1>
           <p className="muted">
             What worked for {insights.competitor_name} across {insights.years.join(' and ')}, month by month, dated for
-            CAT 2026.
+            the upcoming cycle.
           </p>
         </div>
       </section>

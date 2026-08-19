@@ -12,7 +12,7 @@ const FORMATS: { key: '' | 'long' | 'short' | 'live'; label: string }[] = [
   { key: 'short', label: 'Shorts' },
   { key: 'live', label: 'Live' },
 ];
-const SUBJECTS = ['Quants', 'LRDI', 'VARC', 'General'] as const;
+const SUBJECTS = ['Strength', 'Cardio', 'Recovery', 'General'] as const;
 // calendar-month keys (MM) so the filter matches across cycle years in combined mode
 const MONTHS: { key: string; label: string }[] = [
   { key: '08', label: 'Aug' },
