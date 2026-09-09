@@ -1,5 +1,7 @@
 # yt-competitor-swipe
 
+[![tests](https://github.com/svx2027/yt-competitor-swipe/actions/workflows/tests.yml/badge.svg)](https://github.com/svx2027/yt-competitor-swipe/actions/workflows/tests.yml)
+
 Daily competitive intelligence for a YouTube niche. Point it at a handful of
 competitor channels and it scans everything they published in the last 24h,
 scores each upload against six signals, mines the comments on the picks that
@@ -142,7 +144,9 @@ python3 -m unittest discover -s tests -v
 zero-vs-missing distinction), taxonomy tagging, and report assembly —
 including a regression test that spawns fresh subprocesses under different
 hash seeds to confirm title-cluster labeling doesn't depend on Python's
-per-process string-hash order.
+per-process string-hash order. `.github/workflows/tests.yml` runs the same
+suite on every push and pull request (Python 3.11, `pip install -r
+requirements.txt`) — no network calls, so it needs no secrets.
 
 ## Case study
 
