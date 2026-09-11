@@ -13,6 +13,11 @@ taken. That is the pitch: this replaces roughly an hour of "open every
 channel, judge every upload, read the comments" with a script that runs
 before the deadline.
 
+In production this engine scans 40+ competitor channels daily for a real
+client; the repo ships a 15-channel synthetic demo vertical (`competitors.csv`,
+a fictional home-fitness-gear niche) so anyone can run the pipeline and read
+a real report without needing credentials or a real client's data.
+
 ## What it does
 
 1. **Pulls** every competitor channel's uploads from the last 24h (or 7 days
@@ -151,9 +156,9 @@ requirements.txt`) — no network calls, so it needs no secrets.
 ## Case study
 
 A full write-up of the design decisions and platform quirks behind this
-pipeline is in progress as part of a case-study series on
-[shivamvashisth.com](https://shivamvashisth.com) — not published yet. This
-README and `docs/` are the source of truth in the meantime.
+pipeline is live:
+[A script that finishes the scan before a human opens the first channel](https://shivamvashisth.com/case-studies/daily-competitive-intelligence/),
+part of a case-study series on [shivamvashisth.com](https://shivamvashisth.com).
 
 ## Layout
 
