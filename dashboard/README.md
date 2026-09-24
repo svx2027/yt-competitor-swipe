@@ -4,6 +4,51 @@ Reports dashboard for the yt-competitor-swipe pipeline. Lives inside the
 pipeline repo so every routine push (report + ledger) automatically redeploys
 the site with the new report baked in.
 
+## Architecture
+
+```mermaid
+flowchart TD
+    subgraph SRC["Source of truth, committed to main"]
+        REPORTS["reports/*.md\nverticals/&lt;name&gt;/reports/*.md"]
+        LEDGER["data/history.csv\nverticals/&lt;name&gt;/data/history.csv"]
+        REG["lib/verticals.ts\nvertical registry"]
+    end
+
+    REPORTS --> INGEST
+    LEDGER --> INGEST
+    REG --> INGEST
+    INGEST(("scripts/ingest.mjs\nprebuild")) -->|"verification gate: filename/date/kind,\npick count vs preface, video-id extraction,\nledger cross-check"| CONTENT[(".content/&lt;vertical&gt;/*.json\nverified / warned / held")]
+
+    CONTENT --> NEXT(("Next.js\nstatic per-report pages"))
+    NEXT --> HOME["/&lt;vertical&gt;\ncalendar + banner"]
+    NEXT --> REPORT["/&lt;vertical&gt;/r/&lt;slug&gt;"]
+    NEXT --> COMP["/&lt;vertical&gt;/competitors"]
+
+    GOOGLE["Google sign-in\nALLOWED_EMAILS allowlist\n(admin, every vertical)"] --> MW
+    CRED["Per-vertical credentials\nCLIENT_&lt;V&gt;_USERNAME / _HASH"] --> MW
+    MW(("middleware.ts\nauth gate, JWT session")) --> HOME
+    MW --> REPORT
+    MW --> COMP
+
+    REPORT -->|"POST /api/share\n{slug, days}, session required"| SHAREAPI(("api/share"))
+    SHAREAPI -->|"signed JWT, 1-365d"| SHAREPAGE["/share/&lt;token&gt;\nread-only, bypasses the auth gate"]
+
+    BUTTON["Refresh button\nsession-gated"] -->|POST| REFRESH(("api/refresh"))
+    CRON[("Vercel Cron\n05:00 + 09:45 UTC")] -->|"GET, Bearer CRON_SECRET"| RECON(("api/reconcile"))
+    REFRESH --> RECLIB
+    RECON --> RECLIB(("lib/reconcile.ts"))
+    RECLIB -->|"PUT stranded claude/* branch\nreports + ledger rows onto main"| GH[("GitHub Contents API\nsvx2027/yt-competitor-swipe")]
+    GH -->|push to main| REBUILD["Vercel auto-rebuild"]
+    REBUILD -.-> INGEST
+```
+
+Both write paths into GitHub (`api/refresh`'s button and `api/reconcile`'s cron)
+share one idempotent core, `lib/reconcile.ts`: it builds the set of files
+already on `main` first and skips them, so a clean repo is a no-op — no PUT,
+no rebuild. `/share/<token>` is the one route that bypasses `middleware.ts`
+entirely (see the matcher in `middleware.ts`); it verifies its own signed JWT
+instead of a session.
+
 ## How it works
 
 - `scripts/ingest.mjs` runs before every build (`prebuild`). It auto-discovers
