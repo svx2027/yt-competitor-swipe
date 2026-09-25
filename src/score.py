@@ -32,6 +32,7 @@ _GENERIC = {
 
 
 def _sig_tokens(title: str, keep: set[str]) -> set[str]:
+    """Lowercase tokens from title, keeping domain anchors and dropping filler/short/numeric ones."""
     toks = set()
     for t in _TOKEN_RE.findall((title or "").lower()):
         if t in keep:
@@ -111,6 +112,10 @@ def _gemini_clusters(videos: list[dict], model: str, example_subtopics: list[str
 
 
 def cluster_videos(videos: list[dict], token_sets: list[set], cfg: dict) -> tuple[str, list[list[int]]]:
+    """Cluster videos into subtopics via Gemini when configured and within batch size, else the local method.
+
+    Returns (method_used, index_groups) where method_used is "gemini" or "local".
+    """
     gem = cfg.get("gemini", {})
     if gem.get("enabled") and len(videos) <= gem.get("cluster_batch", 60):
         model = os.environ.get(gem.get("fast_env", "GEMINI_MODEL_FAST")) or gem.get("fast_default")
@@ -183,6 +188,7 @@ def compute_outliers(videos: list[dict], cfg: dict) -> None:
 # Calendar
 # --------------------------------------------------------------------------- #
 def active_phase(calendar: dict) -> dict | None:
+    """Return the calendar.yaml phase whose [start, end] window contains today (IST), or None."""
     today = common.today_ist_date()
     for ph in calendar.get("phases", []):
         if ph["start"] <= today <= ph["end"]:
@@ -191,6 +197,10 @@ def active_phase(calendar: dict) -> dict | None:
 
 
 def apply_calendar(videos: list[dict], calendar: dict) -> dict | None:
+    """Score each video's title-hook overlap with the active phase (in place) and flag strong matches.
+
+    Returns the active phase, or None if no phase is active (every video gets a zero boost).
+    """
     phase = active_phase(calendar)
     if not phase:
         for v in videos:
@@ -216,6 +226,11 @@ def apply_calendar(videos: list[dict], calendar: dict) -> dict | None:
 # Sleeper + new format (history-dependent, best-effort)
 # --------------------------------------------------------------------------- #
 def apply_history_signals(videos: list[dict], cfg: dict) -> None:
+    """Flag SLEEPER (re-accelerating VPH) and NEW_FORMAT videos using history_csv, in place.
+
+    Best-effort: a no-op when there is no history yet, and NEW_FORMAT withholds
+    judgment for a channel until it has enough rows to know what "new" means.
+    """
     hist = common.read_history(cfg["output"]["history_csv"])
     if not hist:
         return
@@ -252,6 +267,7 @@ def apply_history_signals(videos: list[dict], cfg: dict) -> None:
 # Main scoring
 # --------------------------------------------------------------------------- #
 def _pct_rank(value: float, sorted_vals: list[float]) -> float:
+    """Percentile rank (0-100) of value within sorted_vals; 0 for an empty list."""
     if not sorted_vals:
         return 0.0
     below = sum(1 for x in sorted_vals if x < value)
@@ -259,6 +275,14 @@ def _pct_rank(value: float, sorted_vals: list[float]) -> float:
 
 
 def score_all(candidates: list[dict], cfg: dict, calendar: dict) -> tuple[list[dict], dict]:
+    """Run the full scoring pipeline and return every candidate ranked by opportunity_score.
+
+    Splits candidates into videos and posts, then for videos: engagement z-scores,
+    outliers, keyword demand, calendar-hook boost, cross-competitor convergence
+    clustering, history-based flags, and the blended 0-100 Opportunity Score;
+    posts get the lighter formula in _score_posts. Returns (candidates, run metadata:
+    cluster method used, active calendar phase, video/post counts).
+    """
     videos = [c for c in candidates if c.get("kind") == "video"]
     posts = [c for c in candidates if c.get("kind") == "post"]
 
@@ -357,6 +381,7 @@ def score_all(candidates: list[dict], cfg: dict, calendar: dict) -> tuple[list[d
 
 
 def _score_posts(posts: list[dict], cfg: dict, calendar: dict) -> None:
+    """Score community posts in place: 45% likes percentile + 35% poll bonus + 20% calendar-hook match."""
     if not posts:
         return
     phase = active_phase(calendar)
