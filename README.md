@@ -175,8 +175,16 @@ reports/      committed daily/weekly reports
 data/         data/history.csv, the tracked master ledger
 ```
 
-## Related
+## Related tools
 
-[yt-mastersheet-kit](https://github.com/svx2027/yt-mastersheet-kit) — a
-sibling YouTube-channel-tracking tool from the same tooling series, built
-with the same config-driven, verify-before-deliver approach.
+- [yt-mastersheet-kit](https://github.com/svx2027/yt-mastersheet-kit) — a
+  sibling YouTube-channel-tracking tool from the same tooling series, built
+  with the same config-driven, verify-before-deliver approach.
+- [yt-competitor-outlier-pipeline](https://github.com/svx2027/yt-competitor-outlier-pipeline) —
+  a lighter, keyless, single-competitor version of the same outlier idea.
+- [youtube-intel-mcp](https://github.com/svx2027/youtube-intel-mcp) — this
+  repo's scoring engine (`score.py`, `keyword_demand.py`, `taxonomy.py`),
+  repackaged as callable MCP tools for any client that already has candidate
+  data to score.
+
+Full index of all public repos: [github.com/svx2027](https://github.com/svx2027).
