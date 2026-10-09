@@ -18,6 +18,13 @@ client; the repo ships a 15-channel synthetic demo vertical (`competitors.csv`,
 a fictional home-fitness-gear niche) so anyone can run the pipeline and read
 a real report without needing credentials or a real client's data.
 
+![Terminal recording of the sample-report pipeline running against the repo's fictional demo vertical: build the report, read its top pick, then the test suite passing](docs/demo/swipe_demo.gif)
+
+The three commands above, run back to back against the fictional demo
+vertical this repo ships (see [Quickstart](#quickstart) below) — real
+captured output, not a mockup. Regenerate it yourself with
+[`docs/demo/make_terminal_gif.py`](docs/demo/make_terminal_gif.py).
+
 ## What it does
 
 1. **Pulls** every competitor channel's uploads from the last 24h (or 7 days
@@ -167,7 +174,8 @@ src/          the engine: youtube_pull, score, keyword_demand, taxonomy,
               report, common (config/vertical resolution, ledger I/O)
 demo/         synthetic demo data generator + its own README
 dashboard/    Next.js reports dashboard, own README + .env.example
-docs/         ARCHITECTURE.md, API_QUOTA.md
+docs/         ARCHITECTURE.md, API_QUOTA.md, scoring.md, demo/ (the README
+              GIF + its generator)
 tests/        66 tests, no network calls
 config.yaml, competitors.csv, calendar.yaml, keywords.txt,
 config/taxonomy.yml    the demo vertical's config (replace for your niche)
